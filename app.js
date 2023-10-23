@@ -9,4 +9,5 @@ logger.log('message');
 
 // require('./path_object');
 // require('./test_os_module');
-require('./test_filesystem_module');
+// require('./test_filesystem_module');
+require('./event_module');

@@ -2,7 +2,7 @@ console.log(__filename);
 console.log(__dirname);
 const url = '...';
 
-import EventEmitter from 'events';
+const EventEmitter = require('events');
 
 // function log(message) {
 //   console.log(message);
@@ -13,7 +13,7 @@ import EventEmitter from 'events';
 class Logger extends EventEmitter {
   log(message) {
     console.log(message);
-    emit('messageLogged', { id: 2, url: 'http://logger.com' });
+    this.emit('messageLogged', { id: 2, url: 'http://logger.com' });
   }
 }
 

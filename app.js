@@ -1,22 +1,25 @@
 // /*jshint esversion: 11 */
-global.console.log('well come');
-var message = 'wow';
-console.log(global.message);
-console.log(module);
-const logger = require('./logger');
+// global.console.log('well come');
+// var message = 'wow';
+// console.log(global.message);
+// console.log(module);
+// const logger = require('./logger');
 
-logger.log('message');
+// logger.log('message');
 
 // require('./path_object');
 // require('./test_os_module');
 // require('./test_filesystem_module');
 // require('./event_module');
-const Logger = require('./logger');
 
-const logger = new Logger();
+// const Logger = require('./logger');
 
-logger.on('messageLogged', (e) => {
-  console.log(e);
-});
+// const logger = new Logger();
 
-logger.log('message is cached!!');
+// logger.on('messageLogged', (e) => {
+//   console.log(e);
+// });
+
+// logger.log('message is cached!!');
+
+require('./http_module');

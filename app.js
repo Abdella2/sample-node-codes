@@ -7,5 +7,6 @@ const logger = require('./logger');
 
 logger.log('message');
 
-require('./path_object');
-require('./test_os_module');
+// require('./path_object');
+// require('./test_os_module');
+require('./test_filesystem_module');

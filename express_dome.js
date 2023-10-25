@@ -1,4 +1,5 @@
 const express = require('express');
+const Joi = require('joi');
 
 const app = express();
 
@@ -35,16 +36,29 @@ app.post('/api/employees', (req, res) => {
 
   const { name, mobile } = req.body;
 
-  if (!name || name.length < 5) {
-    res.status(400).send('Name should be at least 5 character.');
-    return;
-  }
+  // if (!name || name.length < 5) {
+  //   res.status(400).send('Name should be at least 5 character.');
+  //   return;
+  // }
 
-  const regex = RegExp('[0-9]');
+  // const regex = RegExp('[0-9]');
 
-  if (!mobile || !regex.test(mobile)) {
-    res.status(400).send('Mobile number should be in a correct format');
-    return;
+  // if (!mobile || !regex.test(mobile)) {
+  //   res.status(400).send('Mobile number should be in a correct format');
+  //   return;
+  // }
+
+  const schema = Joi.object({
+    name: Joi.string().required().min(5),
+    mobile: Joi.string().required().pattern(new RegExp('^[0-9]{6}$'))
+  });
+
+  const valResult = schema.validate(req.body);
+
+  console.log(valResult);
+
+  if (valResult.error) {
+    res.status(400).send(valResult.error.details[0].message);
   }
 
   const employee = {

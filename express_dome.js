@@ -48,12 +48,7 @@ app.post('/api/employees', (req, res) => {
   //   return;
   // }
 
-  const schema = Joi.object({
-    name: Joi.string().required().min(5),
-    mobile: Joi.string().required().pattern(new RegExp('^[0-9]{6}$'))
-  });
-
-  const valResult = schema.validate(req.body);
+  const valResult = validateEmployee(req.body);
 
   console.log(valResult);
 
@@ -71,6 +66,15 @@ app.post('/api/employees', (req, res) => {
 
   res.send(employee);
 });
+
+function validateEmployee(employee) {
+  const schema = Joi.object({
+    name: Joi.string().required().min(5),
+    mobile: Joi.string().required().pattern(new RegExp('^[0-9]{6}$'))
+  });
+
+  return schema.validate(employee);
+}
 
 const port = process.env.NODE_PORT || 3000;
 

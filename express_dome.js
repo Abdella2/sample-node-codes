@@ -22,6 +22,10 @@ app.get('/api/customers/:id', (req, res) => {
   res.send(response);
 });
 
+app.get('/api/employees', (req, res) => {
+  res.send(employees);
+});
+
 app.get('/api/employees/:id', (req, res) => {
   if (+req.params.id !== 1) {
     res.status(404).send(`Employee with ${req.params.id} not found`);
@@ -53,7 +57,7 @@ app.post('/api/employees', (req, res) => {
   console.log(valResult);
 
   if (valResult.error) {
-    res.status(400).send(valResult.error.details[0].message);
+    return res.status(400).send(valResult.error.details[0].message);
   }
 
   const employee = {
@@ -63,6 +67,24 @@ app.post('/api/employees', (req, res) => {
   };
 
   employees.push(employee);
+
+  res.send(employee);
+});
+
+app.put('/api/employees/:id', (req, res) => {
+  const employee = employees.find((emp) => emp.id === +req.params.id);
+
+  if (!employee)
+    return res
+      .status(404)
+      .send(`Employee with id ${requ.params.id} NOT found!`);
+
+  const { error } = validateEmployee(req.body);
+
+  if (error) return res.status(400).send(error.details[0].message);
+
+  employee.name = req.body.name;
+  employee.mobile = req.body.mobile;
 
   res.send(employee);
 });

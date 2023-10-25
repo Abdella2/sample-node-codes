@@ -2,6 +2,10 @@ const express = require('express');
 
 const app = express();
 
+app.use(express.json());
+
+let employees = [];
+
 app.get('/', (req, res) => res.send('hello world'));
 
 app.get('/api/customers', (req, res) =>
@@ -24,6 +28,34 @@ app.get('/api/employees/:id', (req, res) => {
   }
 
   res.send({ id: '1' });
+});
+
+app.post('/api/employees', (req, res) => {
+  console.log(req.body);
+
+  const { name, mobile } = req.body;
+
+  if (!name || name.length < 5) {
+    res.status(400).send('Name should be at least 5 character.');
+    return;
+  }
+
+  const regex = RegExp('[0-9]');
+
+  if (!mobile || !regex.test(mobile)) {
+    res.status(400).send('Mobile number should be in a correct format');
+    return;
+  }
+
+  const employee = {
+    id: employees.length,
+    name,
+    mobile
+  };
+
+  employees.push(employee);
+
+  res.send(employee);
 });
 
 const port = process.env.NODE_PORT || 3000;

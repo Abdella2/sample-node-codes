@@ -23,5 +23,5 @@
 // logger.log('message is cached!!');
 
 // require('./http_module');
-require('./test_process_object');
-// require('./express_dome');
+// require('./test_process_object');
+require('./express_dome');

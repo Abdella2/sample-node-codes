@@ -7,7 +7,7 @@
     "esversion": 12
   },
   "scripts": {
-    "start": "nodemon --exec 'jshint app.js && node' app.js"
+    "start": "nodemon --exec \"jshint app.js && node app.js\""
   },
   "dependencies": {
     "express": "^4.18.2"

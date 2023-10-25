@@ -15,4 +15,4 @@ const server = http.createServer((req, res) => {
 // server.on('connection', (socket) => console.log(socket));
 
 server.listen(4000);
-console.log('listening on port 4000');
+console.log('Server listening on port 4000');

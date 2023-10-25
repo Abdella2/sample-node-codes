@@ -1,8 +1,12 @@
 {
   "devDependencies": {
-    "jshint": "^2.13.6"
+    "jshint": "^2.13.6",
+    "nodemon": "^3.0.1"
   },
   "jshintConfig": {
     "esversion": 12
+  },
+  "scripts": {
+    "start": "nodemon --exec 'jshint app.js && node' app.js"
   }
 }

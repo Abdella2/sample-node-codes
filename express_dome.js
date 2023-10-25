@@ -17,6 +17,15 @@ app.get('/api/customers/:id', (req, res) => {
   res.send(response);
 });
 
+app.get('/api/employees/:id', (req, res) => {
+  if (+req.params.id !== 1) {
+    res.status(404).send(`Employee with ${req.params.id} not found`);
+    return;
+  }
+
+  res.send({ id: '1' });
+});
+
 const port = process.env.NODE_PORT || 3000;
 
 app.listen(port, () => console.log(`Server is listening on port ${port}...`));

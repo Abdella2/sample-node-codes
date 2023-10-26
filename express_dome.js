@@ -1,5 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
+const appInfo = require('debug')('app:info');
+const appServer = require('debug')('app:server');
 const Joi = require('joi');
 const logger = require('./custom_middleware');
 const config = require('config');
@@ -20,11 +22,12 @@ if (app.get('env')) {
       return res.statusCode < 400;
     }
   });
-  console.log('morgan enabled');
+  appInfo('morgan enabled');
 }
 
 console.log(config.get('app_name'));
-console.log(config.get('employee.dbConfig.host'));
+console.log(`Host: ${config.get('employee.dbConfig.host')}`);
+console.log(`Password: ${config.get('employee.dbConfig.dbPassword')}`);
 
 let employees = [];
 
@@ -135,4 +138,4 @@ function validateEmployee(employee) {
 
 const port = process.env.NODE_PORT || 3000;
 
-app.listen(port, () => console.log(`Server is listening on port ${port}...`));
+app.listen(port, () => appServer(`Server is listening on port ${port}...`));

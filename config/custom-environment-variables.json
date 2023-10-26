@@ -1,0 +1,7 @@
+{
+  "employee": {
+    "dbConfig": {
+      "dbPassword": "NODE_APP_PASSWORD"
+    }
+  }
+}

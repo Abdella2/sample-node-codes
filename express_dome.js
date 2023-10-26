@@ -1,4 +1,5 @@
 const express = require('express');
+const morgan = require('morgan');
 const Joi = require('joi');
 const logger = require('./custom_middleware');
 
@@ -6,6 +7,20 @@ const app = express();
 
 app.use(express.json());
 app.use(logger.log);
+
+console.log(process.env);
+console.log(`Environment Variable: ${process.env.NODE_ENV}`);
+console.log(`Environment Variable: ${app.get('env')}`);
+
+if (app.get('env')) {
+  app.use(morgan('tiny'));
+  morgan('combined', {
+    skip: function (req, res) {
+      return res.statusCode < 400;
+    }
+  });
+  console.log('morgan enabled');
+}
 
 let employees = [];
 

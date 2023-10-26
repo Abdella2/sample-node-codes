@@ -83,8 +83,22 @@ app.put('/api/employees/:id', (req, res) => {
 
   if (error) return res.status(400).send(error.details[0].message);
 
-  employee.name = req.body.name;
-  employee.mobile = req.body.mobile;
+  // employee.name = req.body.name;
+  // employee.mobile = req.body.mobile;
+
+  employee = { ...employee, ...req.body };
+
+  res.send(employee);
+});
+
+app.delete('/api/employees/:id', (req, res) => {
+  const employee = employees.find((emp) => emp.id === +req.params.id);
+
+  if (!employee)
+    return res.status(404).send(`Employee with id ${req.params.id} NOT found`);
+
+  const index = employees.findIndex((emp) => emp.id === +req.params.id);
+  employees.splice(index, 1);
 
   res.send(employee);
 });

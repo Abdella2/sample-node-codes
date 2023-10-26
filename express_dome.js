@@ -1,9 +1,11 @@
 const express = require('express');
 const Joi = require('joi');
+const logger = require('./custom_middleware');
 
 const app = express();
 
 app.use(express.json());
+app.use(logger.log);
 
 let employees = [];
 

@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const Joi = require('joi');
 const logger = require('./custom_middleware');
+const config = require('config');
 
 const app = express();
 
@@ -21,6 +22,9 @@ if (app.get('env')) {
   });
   console.log('morgan enabled');
 }
+
+console.log(config.get('app_name'));
+console.log(config.get('employee.dbConfig.host'));
 
 let employees = [];
 

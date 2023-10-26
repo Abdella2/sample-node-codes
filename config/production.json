@@ -1,0 +1,14 @@
+{
+  "app_name": "Node Demo App - Production",
+  "employee": {
+    "dbConfig": {
+      "host": "prod.localhost",
+      "port": 5984,
+      "dbName": "employees"
+    },
+    "credit": {
+      "initialLimit": 100,
+      "initialDays": 1
+    }
+  }
+}

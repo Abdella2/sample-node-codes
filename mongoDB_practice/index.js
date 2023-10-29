@@ -72,6 +72,37 @@ async function getCustomer(pageNumber, pageSize) {
     .limit(pageSize);
 }
 
+async function queryFirstUpdate(id) {
+  const customer = await Customer.findById(id);
+
+  if (!customer) return;
+
+  customer.set({
+    name: 'Update John'
+  });
+
+  const updatedCustomer = await customer.save();
+  appInfo(updatedCustomer);
+}
+
+async function updateFirstUpdate(id) {
+  const result = await Customer.updateOne(
+    { _id: id },
+    { name: 'direct updated John' }
+  );
+  console.log('Returns Update result: ', result);
+
+  const customer = await Customer.findByIdAndUpdate(
+    id,
+    { amountLimits: 7654 },
+    { new: true }
+  );
+  console.log('Returns updated customer', customer);
+}
+
 // displayEmployee();
 // createEmployee();
-numberOfEmployees();
+// numberOfEmployees();
+const id = '653e576470d72043f44b3213';
+// queryFirstUpdate(id);
+updateFirstUpdate(id);

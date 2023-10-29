@@ -51,5 +51,11 @@ async function comparisonOperator() {
   });
 }
 
+async function logicalOperator() {
+  let customer = await Customer.find()
+    .or([{ name: 'John' }, { isGold: false }])
+    .and([{ name: 'John' }, { isGold: false }]);
+}
+
 displayEmployee();
 // createEmployee();

@@ -66,6 +66,12 @@ async function numberOfEmployees() {
   appInfo('Number of employees: ', numberOfCustomer);
 }
 
+async function getCustomer(pageNumber, pageSize) {
+  return await Customer.find()
+    .skip((pageNumber - 1) * pageSize)
+    .limit(pageSize);
+}
+
 // displayEmployee();
 // createEmployee();
 numberOfEmployees();

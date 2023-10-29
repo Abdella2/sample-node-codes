@@ -16,7 +16,8 @@ const customerSchema = new mongoose.Schema({
   name: String,
   phone: [Number],
   invoiceDate: { type: Date, default: Date.now },
-  isGold: Boolean
+  isGold: Boolean,
+  amountLimits: Number
 });
 
 const Customer = mongoose.model('customer', customerSchema);
@@ -39,6 +40,15 @@ async function displayEmployee() {
     .select({ name: 1, isGold: 1 });
 
   appInfo(customers);
+}
+
+async function comparisonOperator() {
+  let customers = await Customer.find({ amountLimits: { $eq: 1000 } });
+  customers = await Customer.find({ amountLimits: { $ne: 1000 } });
+  customers = await Customer.find({ amountLimits: { $gte: 1000, $lte: 5000 } });
+  customers = await Customer.find({
+    amountLimits: { $in: [1000, 2000, 2500] }
+  });
 }
 
 displayEmployee();

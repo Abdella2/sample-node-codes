@@ -32,4 +32,14 @@ async function createEmployee() {
   appInfo(`Saved Customer: ${customerInDB}`);
 }
 
-createEmployee();
+async function displayEmployee() {
+  const customers = await Customer.find({ name: 'John 2' })
+    .sort({ name: 1, isGold: 1 })
+    .limit(10)
+    .select({ name: 1, isGold: 1 });
+
+  appInfo(customers);
+}
+
+displayEmployee();
+// createEmployee();

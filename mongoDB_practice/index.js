@@ -57,5 +57,9 @@ async function logicalOperator() {
     .and([{ name: 'John' }, { isGold: false }]);
 }
 
+async function regularExpression() {
+  let customer = await Customer.find({ name: /^John$/i });
+}
+
 displayEmployee();
 // createEmployee();

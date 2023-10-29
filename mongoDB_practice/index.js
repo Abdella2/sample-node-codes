@@ -61,5 +61,11 @@ async function regularExpression() {
   let customer = await Customer.find({ name: /^John$/i });
 }
 
-displayEmployee();
+async function numberOfEmployees() {
+  let numberOfCustomer = await Customer.count();
+  appInfo('Number of employees: ', numberOfCustomer);
+}
+
+// displayEmployee();
 // createEmployee();
+numberOfEmployees();

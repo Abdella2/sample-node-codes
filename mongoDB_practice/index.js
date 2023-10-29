@@ -97,7 +97,15 @@ async function updateFirstUpdate(id) {
     { amountLimits: 7654 },
     { new: true }
   );
-  console.log('Returns updated customer', customer);
+  console.log('Returns updated customer: ', customer);
+}
+
+async function deleteEmployee(id) {
+  const result = await Customer.deleteOne({ _id: id });
+  console.log('Returns delete result: ', result);
+
+  const customer = await Customer.findByIdAndDelete(id);
+  console.log('Returns deleted customer: ', customer);
 }
 
 // displayEmployee();
@@ -105,4 +113,5 @@ async function updateFirstUpdate(id) {
 // numberOfEmployees();
 const id = '653e576470d72043f44b3213';
 // queryFirstUpdate(id);
-updateFirstUpdate(id);
+// updateFirstUpdate(id);
+deleteEmployee(id);

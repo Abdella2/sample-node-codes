@@ -11,3 +11,25 @@ mongoose
   .connect(dbUrl)
   .then(() => appInfo('Connected to mongodb.'))
   .catch((err) => appError("can't connect to mongodb", err.message));
+
+const customerSchema = new mongoose.Schema({
+  name: String,
+  phone: [Number],
+  invoiceDate: { type: Date, default: Date.now },
+  isGold: Boolean
+});
+
+const Customer = mongoose.model('customer', customerSchema);
+
+const customer = new Customer({
+  name: 'John 2',
+  phone: [910, 1911],
+  isGold: true
+});
+
+async function createEmployee() {
+  const customerInDB = await customer.save();
+  appInfo(`Saved Customer: ${customerInDB}`);
+}
+
+createEmployee();

@@ -24,6 +24,10 @@ const employeeSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    uppercase: true,
+    trim: true,
+    get: (v) => `Emp ${v}`,
+    set: (v) => v.replace('Emp ', ''),
     validate: (v) =>
       new Promise((resolve, reject) =>
         setTimeout(reject(new Error(`Oops! value -> ${v}`)), 1000)
@@ -69,7 +73,7 @@ const employeeSchema = new mongoose.Schema({
   }
 });
 
-const Employee = mongoose.model('employee', employeeSchema);
+const Employee = mongoose.model('Employee', employeeSchema);
 
 const employee = new Employee({
   name: 'John',

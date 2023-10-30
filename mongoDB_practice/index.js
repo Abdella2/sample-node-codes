@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const appInfo = require('debug')('app:info');
 const appError = require('debug')('app:error');
 const config = require('config');
+require('./data_validation');
 
 const dbUrl = `${config.get('db.host')}:${config.get('db.port')}/${config.get(
   'db.dbName'
@@ -115,7 +116,3 @@ const id = '653e576470d72043f44b3213';
 // queryFirstUpdate(id);
 // updateFirstUpdate(id);
 // deleteEmployee(id);
-
-module.exports.mongoose = mongoose;
-
-require('./data_validation');

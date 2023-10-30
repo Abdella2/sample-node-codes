@@ -1,8 +1,7 @@
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const appInfo = require('debug')('app:info');
 const appError = require('debug')('app:error');
 const config = require('config');
-const mongoose = require('./index').mongoose;
 
 // const dbUrl = `${config.get('db.host')}:${config.get('db.port')}/${config.get(
 //   'db.dbName'

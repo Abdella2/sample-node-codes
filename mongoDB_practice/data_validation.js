@@ -21,7 +21,21 @@ const employeeSchema = new mongoose.Schema({
     maxlength: 255,
     match: /^EMP[0-9]{3}/i
   },
-  name: { type: String, required: true },
+  name: {
+    type: String,
+    required: true,
+    validate: (v) =>
+      new Promise((resolve, reject) =>
+        setTimeout(reject(new Error(`Oops! value -> ${v}`)), 1000)
+      )
+  },
+  email: {
+    type: String,
+    validate: {
+      validator: () => Promise.resolve(false),
+      message: 'Email validation failed'
+    }
+  },
   salary: {
     type: Number,
     min: [1000, 'should be greater than 1000'],
@@ -59,11 +73,12 @@ const Employee = mongoose.model('employee', employeeSchema);
 
 const employee = new Employee({
   name: 'John',
+  email: 'ab@gm',
   employeeNo: 'EMP012',
   salary: 1100,
   paymentMethod: 'Cash',
-  phone: 's',
-  departments: null
+  phone: '123-123-1234',
+  departments: ['computer science']
 });
 
 async function createEmployee() {

@@ -114,4 +114,8 @@ async function deleteEmployee(id) {
 const id = '653e576470d72043f44b3213';
 // queryFirstUpdate(id);
 // updateFirstUpdate(id);
-deleteEmployee(id);
+// deleteEmployee(id);
+
+module.exports.mongoose = mongoose;
+
+require('./data_validation');

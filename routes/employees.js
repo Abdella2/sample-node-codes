@@ -1,5 +1,7 @@
 const express = require('express');
 const { Employee, validate } = require('../models/employee');
+const { Address } = require('../models/address');
+const appInfo = require('debug')('app:info');
 
 const router = express.Router();
 
@@ -32,7 +34,8 @@ router.post('/', async (req, res) => {
     paymentMethod,
     phone,
     departments,
-    company
+    company,
+    address
   } = req.body;
 
   // if (!name || name.length < 5) {
@@ -61,7 +64,8 @@ router.post('/', async (req, res) => {
     paymentMethod,
     phone,
     departments,
-    company
+    company,
+    address
   });
 
   try {
@@ -102,6 +106,54 @@ router.put('/:id', async (req, res) => {
   // employee.mobile = req.body.mobile;
 
   // employee = { ...employee, ...req.body };
+
+  res.send(employee);
+});
+router.put('/:id/address', async (req, res) => {
+  // const { error } = validate(req.body);
+
+  // if (error) return res.status(400).send(error.details[0].message);
+
+  const { houseNo, street } = req.body;
+
+  let address = new Address({
+    houseNo,
+    street
+  });
+  appInfo('Address: ', address);
+  let employee = await Employee.findByIdAndUpdate(
+    req.params.id,
+    {
+      $set: {
+        address: address
+      }
+    },
+    {
+      new: true
+    }
+  );
+
+  if (!employee)
+    return res.status(404).send(`Employee with id ${req.params.id} NOT found!`);
+
+  res.send(employee);
+});
+
+router.delete('/:id/address', async (req, res) => {
+  let employee = await Employee.findByIdAndUpdate(
+    req.params.id,
+    {
+      $unset: {
+        address: ''
+      }
+    },
+    {
+      new: true
+    }
+  );
+
+  if (!employee)
+    return res.status(404).send(`Employee with id ${req.params.id} NOT found!`);
 
   res.send(employee);
 });

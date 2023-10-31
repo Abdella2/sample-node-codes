@@ -1,8 +1,8 @@
+const mongoose = require('mongoose');
 const express = require('express');
 const morgan = require('morgan');
 const appInfo = require('debug')('app:info');
 const appServer = require('debug')('app:server');
-const Joi = require('joi');
 const logger = require('./middlewares/custom_middleware');
 const config = require('config');
 const employees = require('./routes/employees');
@@ -15,6 +15,15 @@ app.use(logger.log);
 app.use('/api/employees', employees);
 app.use('/api/customers', customers);
 app.use(express.static('public'));
+
+const dbUrl = `${config.get('db.host')}:${config.get('db.port')}/${config.get(
+  'db.dbName'
+)}`;
+
+mongoose
+  .connect(dbUrl)
+  .then(() => appInfo('Connected to mongodb.'))
+  .catch((err) => appError("can't connect to mongodb", err.message));
 
 console.log(process.env);
 console.log(`Environment Variable: ${process.env.NODE_ENV}`);

@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
+const { Company } = require('./company');
 
 const Employee = mongoose.model(
   'Employee',
@@ -48,6 +49,10 @@ const Employee = mongoose.model(
         },
         message: 'Employee should has at least one department.'
       }
+    },
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Company'
     }
   })
 );
@@ -66,7 +71,8 @@ function validateEmployee(employee) {
     email: Joi.string(),
     salary: Joi.number().min(1000).max(1200),
     paymentMethod: Joi.string(),
-    departments: Joi.array()
+    departments: Joi.array(),
+    company: Joi.string().required()
   });
 
   return schema.validate(employee);

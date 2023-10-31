@@ -6,7 +6,9 @@ const router = express.Router();
 // let employees = [];
 
 router.get('/', async (req, res) => {
-  const employees = await Employee.find().sort({ name: 1 });
+  const employees = await Employee.find()
+    .populate('company', 'name -_id')
+    .sort({ name: 1 });
   res.send(employees);
 });
 
@@ -22,8 +24,16 @@ router.get('/:id', (req, res) => {
 router.post('/', async (req, res) => {
   // console.log(req.body);
 
-  const { employeeNo, name, email, salary, paymentMethod, phone, departments } =
-    req.body;
+  const {
+    employeeNo,
+    name,
+    email,
+    salary,
+    paymentMethod,
+    phone,
+    departments,
+    company
+  } = req.body;
 
   // if (!name || name.length < 5) {
   //   res.status(400).send('Name should be at least 5 character.');
@@ -50,7 +60,8 @@ router.post('/', async (req, res) => {
     salary,
     paymentMethod,
     phone,
-    departments
+    departments,
+    company
   });
 
   try {

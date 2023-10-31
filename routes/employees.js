@@ -2,6 +2,7 @@ const express = require('express');
 const { Employee, validate } = require('../models/employee');
 const { Address } = require('../models/address');
 const { Car } = require('../models/cars');
+const { Gender } = require('../models/gender');
 const appInfo = require('debug')('app:info');
 
 const router = express.Router();
@@ -37,7 +38,8 @@ router.post('/', async (req, res) => {
     departments,
     company,
     address,
-    cars
+    cars,
+    genderId
   } = req.body;
 
   // if (!name || name.length < 5) {
@@ -57,6 +59,10 @@ router.post('/', async (req, res) => {
 
   if (error) return res.status(400).send(error.details[0].message);
 
+  const gender = await Gender.findById(genderId);
+  if (!gender)
+    return res.status(400).send(`Gender with id ${genderId} doesn't exist`);
+
   let employee = new Employee({
     employeeNo,
     name,
@@ -67,7 +73,11 @@ router.post('/', async (req, res) => {
     departments,
     company,
     address,
-    cars
+    cars,
+    gender: {
+      _id: gender._id,
+      name: gender.name
+    }
   });
 
   try {

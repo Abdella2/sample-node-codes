@@ -2,6 +2,7 @@ const Joi = require('joi');
 const mongoose = require('mongoose');
 const { Company } = require('./company');
 const { addressSchema, Address } = require('./address');
+const { carSchema } = require('./cars');
 
 const Employee = mongoose.model(
   'Employee',
@@ -58,7 +59,8 @@ const Employee = mongoose.model(
     address: {
       type: addressSchema,
       required: true
-    }
+    },
+    cars: [carSchema]
   })
 );
 
@@ -78,7 +80,8 @@ function validateEmployee(employee) {
     paymentMethod: Joi.string(),
     departments: Joi.array(),
     company: Joi.string().required(),
-    address: Joi.object()
+    address: Joi.object(),
+    cars: Joi.array()
   });
 
   return schema.validate(employee);

@@ -1,6 +1,7 @@
 const express = require('express');
 const { Employee, validate } = require('../models/employee');
 const { Address } = require('../models/address');
+const { Car } = require('../models/cars');
 const appInfo = require('debug')('app:info');
 
 const router = express.Router();
@@ -35,7 +36,8 @@ router.post('/', async (req, res) => {
     phone,
     departments,
     company,
-    address
+    address,
+    cars
   } = req.body;
 
   // if (!name || name.length < 5) {
@@ -51,7 +53,6 @@ router.post('/', async (req, res) => {
   // }
 
   // console.log(valResult);
-
   const { error } = validate(req.body);
 
   if (error) return res.status(400).send(error.details[0].message);
@@ -65,7 +66,8 @@ router.post('/', async (req, res) => {
     phone,
     departments,
     company,
-    address
+    address,
+    cars
   });
 
   try {
@@ -163,6 +165,38 @@ router.delete('/:id', async (req, res) => {
 
   if (!employee)
     return res.status(404).send(`Employee with id ${req.params.id} NOT found`);
+
+  res.send(employee);
+});
+
+router.post('/:id/cars', async (req, res) => {
+  const { name, model } = req.body;
+
+  let car = new Car({
+    name,
+    model
+  });
+
+  let employee = await Employee.findById(req.params.id);
+
+  if (!employee)
+    return res.status(404).send(`Employee with id ${req.params.id} NOT found!`);
+
+  employee.cars.push(car);
+  employee.save();
+
+  res.send(employee);
+});
+
+router.delete('/:employeeId/cars/:carId', async (req, res) => {
+  let employee = await Employee.findById(req.params.employeeId);
+
+  if (!employee)
+    return res.status(404).send(`Employee with id ${req.params.id} NOT found!`);
+
+  const car = employee.cars.id(req.params.carId);
+  employee.cars.pull(car);
+  employee.save();
 
   res.send(employee);
 });

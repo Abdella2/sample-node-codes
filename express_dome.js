@@ -7,13 +7,19 @@ const logger = require('./middlewares/custom_middleware');
 const config = require('config');
 const employees = require('./routes/employees');
 const customers = require('./routes/customers');
+const posts = require('./routes/posts');
+const genders = require('./routes/genders');
+const cors = require('cors');
 
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 app.use(logger.log);
 app.use('/api/employees', employees);
 app.use('/api/customers', customers);
+app.use('/api/posts', posts);
+app.use('/api/genders', genders);
 app.use(express.static('public'));
 
 const dbUrl = `${config.get('db.host')}:${config.get('db.port')}/${config.get(

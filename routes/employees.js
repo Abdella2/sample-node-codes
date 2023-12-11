@@ -16,13 +16,14 @@ router.get('/', async (req, res) => {
   res.send(employees);
 });
 
-router.get('/:id', (req, res) => {
-  if (+req.params.id !== 1) {
+router.get('/:id', async (req, res) => {
+  const employee = await Employee.findById(req.params.id);
+  if (!employee) {
     res.status(404).send(`Employee with ${req.params.id} not found`);
     return;
   }
 
-  res.send({ id: '1' });
+  res.send(employee);
 });
 
 router.post('/', async (req, res) => {

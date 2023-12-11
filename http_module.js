@@ -10,6 +10,10 @@ const server = http.createServer((req, res) => {
     res.write(JSON.stringify([{ id: 1, name: 'hone' }]));
     res.end();
   }
+
+  if (req.url === '/api/posts') {
+    res.write(JSON.str);
+  }
 });
 
 // server.on('connection', (socket) => console.log(socket));

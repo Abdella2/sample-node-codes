@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-function validate(user) {
+function validateUser(user) {
   const schema = Joi.object({
     name: Joi.string().min(5).max(50).required(),
     email: Joi.string().min(5).max(255).email().required(),
@@ -25,9 +25,19 @@ function validate(user) {
   return schema.validate(user);
 }
 
+function validateAuth(user) {
+  const schema = Joi.object({
+    email: Joi.string().min(5).max(255).email().required(),
+    password: Joi.string().min(5).required(255)
+  });
+
+  return schema.validate(user, { allowUnknown: true });
+}
+
 // exports.User = User;
 // exports.validate = validate;
 module.exports = {
   User,
-  validate
+  validateUser,
+  validateAuth
 };

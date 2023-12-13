@@ -1,12 +1,14 @@
 require('express-async-errors');
 require('winston-mongodb');
 const winston = require('winston');
-const mongoose = require('mongoose');
 const express = require('express');
 const morgan = require('morgan');
 const appInfo = require('debug')('app:info');
 const appServer = require('debug')('app:server');
 const config = require('config');
+const { connect } = require('./startup/db');
+
+connect();
 const app = express();
 
 require('./startup/routes')(app);
@@ -35,17 +37,6 @@ const p = Promise.reject(new Error('Something failed unexpected.'));
 p.then(() => console.log('Request completed'));
 
 // throw new Error('Something failed during startup.');
-
-function getConnectionString() {
-  return `${config.get('db.host')}:${config.get('db.port')}/${config.get(
-    'db.dbName'
-  )}`;
-}
-
-mongoose
-  .connect(getConnectionString())
-  .then(() => appInfo('Connected to mongodb.'))
-  .catch((err) => appError("can't connect to mongodb", err.message));
 
 console.log(process.env);
 console.log(`Environment Variable: ${process.env.NODE_ENV}`);

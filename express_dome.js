@@ -16,8 +16,22 @@ const genders = require('./routes/genders');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
 const cors = require('cors');
-
 const app = express();
+
+winston.add(new winston.transports.File({ filename: 'logfile.log' }));
+winston.add(
+  new winston.transports.MongoDB({
+    db: getConnectionString(),
+    level: 'error'
+  })
+);
+
+process.on('uncaughtException', (ex) => {
+  console.log('An UNCAUGHT EXCEPTION OCCURRED');
+  winston.error(ex.message, ex);
+});
+
+throw new Error('Something failed during startup.');
 
 app.use(express.json());
 app.use(cors());
@@ -36,14 +50,6 @@ function getConnectionString() {
     'db.dbName'
   )}`;
 }
-
-winston.add(new winston.transports.File({ filename: 'logfile.log' }));
-winston.add(
-  new winston.transports.MongoDB({
-    db: getConnectionString(),
-    level: 'error'
-  })
-);
 
 mongoose
   .connect(getConnectionString())

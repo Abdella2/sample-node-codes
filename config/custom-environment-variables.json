@@ -3,5 +3,6 @@
     "dbConfig": {
       "dbPassword": "NODE_APP_PASSWORD"
     }
-  }
+  },
+  "jwtPrivateKey": "NODE_PRIVATE_KEY"
 }

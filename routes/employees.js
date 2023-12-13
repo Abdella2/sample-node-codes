@@ -1,3 +1,4 @@
+const auth = require('../middlewares/auth');
 const express = require('express');
 const { Employee, validate } = require('../models/employee');
 const { Address } = require('../models/address');
@@ -26,7 +27,7 @@ router.get('/:id', async (req, res) => {
   res.send(employee);
 });
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   // console.log(req.body);
 
   const {
@@ -90,7 +91,7 @@ router.post('/', async (req, res) => {
   res.send(employee);
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
   const { error } = validate(req.body);
 
   if (error) return res.status(400).send(error.details[0].message);
@@ -122,7 +123,7 @@ router.put('/:id', async (req, res) => {
 
   res.send(employee);
 });
-router.put('/:id/address', async (req, res) => {
+router.put('/:id/address', auth, async (req, res) => {
   // const { error } = validate(req.body);
 
   // if (error) return res.status(400).send(error.details[0].message);

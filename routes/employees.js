@@ -12,6 +12,7 @@ const router = express.Router();
 // let employees = [];
 
 router.get('/', async (req, res) => {
+  throw new Error("Couldn't get the employees");
   const employees = await Employee.find()
     .populate('company', 'name -_id')
     .sort({ name: 1 });

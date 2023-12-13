@@ -1,4 +1,6 @@
 require('express-async-errors');
+require('winston-mongodb');
+const winston = require('winston');
 const error = require('./middlewares/error');
 const mongoose = require('mongoose');
 const express = require('express');
@@ -28,6 +30,16 @@ app.use('/api/users', users);
 app.use('/api/auth', auth);
 app.use(express.static('public'));
 app.use(error);
+
+winston.add(new winston.transports.File({ filename: 'logfile.log' }));
+winston.add(
+  new winston.transports.MongoDB({
+    db: `${config.get('db.host')}:${config.get('db.port')}/${config.get(
+      'db.dbName'
+    )}`,
+    level: 'error'
+  })
+);
 
 const dbUrl = `${config.get('db.host')}:${config.get('db.port')}/${config.get(
   'db.dbName'

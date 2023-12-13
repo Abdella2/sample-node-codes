@@ -1,4 +1,5 @@
 const auth = require('../middlewares/auth');
+const admin = require('../middlewares/admin');
 const express = require('express');
 const { Employee, validate } = require('../models/employee');
 const { Address } = require('../models/address');
@@ -172,7 +173,7 @@ router.delete('/:id/address', async (req, res) => {
   res.send(employee);
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', [auth, admin], async (req, res) => {
   const employee = await Employee.findByIdAndRemove(req.params.id);
 
   if (!employee)

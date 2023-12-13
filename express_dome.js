@@ -1,3 +1,4 @@
+const error = require('./middlewares/error');
 const mongoose = require('mongoose');
 const express = require('express');
 const morgan = require('morgan');
@@ -25,6 +26,7 @@ app.use('/api/genders', genders);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
 app.use(express.static('public'));
+app.use(error);
 
 const dbUrl = `${config.get('db.host')}:${config.get('db.port')}/${config.get(
   'db.dbName'

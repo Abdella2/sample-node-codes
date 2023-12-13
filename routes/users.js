@@ -8,14 +8,14 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const auth = require('../middlewares/auth');
 
-router.get('/me', auth, async (req, res) => {
+router.get('/me', auth, async (req, res, next) => {
   try {
     const user = await User.findOne({ _id: req.user._id }).select(
       '-password -__v'
     );
     res.send(user);
   } catch (ex) {
-    res.status(500).send('Something failed');
+    next();
   }
 });
 

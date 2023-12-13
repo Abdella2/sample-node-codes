@@ -31,22 +31,22 @@ app.use('/api/auth', auth);
 app.use(express.static('public'));
 app.use(error);
 
+function getConnectionString() {
+  return `${config.get('db.host')}:${config.get('db.port')}/${config.get(
+    'db.dbName'
+  )}`;
+}
+
 winston.add(new winston.transports.File({ filename: 'logfile.log' }));
 winston.add(
   new winston.transports.MongoDB({
-    db: `${config.get('db.host')}:${config.get('db.port')}/${config.get(
-      'db.dbName'
-    )}`,
+    db: getConnectionString(),
     level: 'error'
   })
 );
 
-const dbUrl = `${config.get('db.host')}:${config.get('db.port')}/${config.get(
-  'db.dbName'
-)}`;
-
 mongoose
-  .connect(dbUrl)
+  .connect(getConnectionString())
   .then(() => appInfo('Connected to mongodb.'))
   .catch((err) => appError("can't connect to mongodb", err.message));
 

@@ -1,15 +1,13 @@
-const express = require('express');
 const appServer = require('debug')('app:server');
-
-require('./startup/logging')();
-
+const winston = require('winston');
+const express = require('express');
+const app = express();
 const { connect, getConnectionString } = require('./startup/db');
 connect();
 
-const app = express();
+require('./startup/logging')();
 require('./startup/routes')(app);
-require('./startup/config')();
-const { connect } = require('./startup/db');
+require('./startup/config')(app);
 
 console.log(process.env);
 console.log(`Environment Variable: ${process.env.NODE_ENV}`);

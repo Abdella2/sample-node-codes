@@ -1,7 +1,7 @@
 const config = require('config');
 const appInfo = require('debug')('app:info');
 const morgan = require('morgan');
-module.exports = function () {
+module.exports = function (app) {
   if (!config.get('jwtPrivateKey')) {
     throw new Error('JWT private key not defined.');
   }

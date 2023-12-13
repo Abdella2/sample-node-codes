@@ -1,42 +1,17 @@
-require('express-async-errors');
-require('winston-mongodb');
 const winston = require('winston');
 const express = require('express');
 const morgan = require('morgan');
 const appInfo = require('debug')('app:info');
 const appServer = require('debug')('app:server');
 const config = require('config');
-const { connect } = require('./startup/db');
 
+require('./startup/logging')();
+
+const { connect, getConnectionString } = require('./startup/db');
 connect();
+
 const app = express();
-
 require('./startup/routes')(app);
-
-winston.add(new winston.transports.File({ filename: 'logfile.log' }));
-winston.add(
-  new winston.transports.MongoDB({
-    db: getConnectionString(),
-    level: 'error'
-  })
-);
-
-process.on('uncaughtException', (ex) => {
-  console.log('An UNCAUGHT EXCEPTION OCCURRED');
-  winston.error(ex.message, ex);
-  process.exit(1);
-});
-
-process.on('unhandledRejection', (ex) => {
-  console.log('UNHANDLED PROMISE REJECTION.');
-  winston.error(ex.message, ex);
-  process.exit(1);
-});
-
-const p = Promise.reject(new Error('Something failed unexpected.'));
-p.then(() => console.log('Request completed'));
-
-// throw new Error('Something failed during startup.');
 
 console.log(process.env);
 console.log(`Environment Variable: ${process.env.NODE_ENV}`);

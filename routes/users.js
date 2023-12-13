@@ -4,7 +4,16 @@ const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const { User, validateUser } = require('../models/user');
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
+const auth = require('../middlewares/auth');
+
+router.get('/me', auth, async (req, res) => {
+  const user = await User.findOne({ _id: req.user._id }).select(
+    '-password -__v'
+  );
+  res.send(user);
+});
 
 router.post('/', async (req, res) => {
   const { error } = validateUser(req.body);

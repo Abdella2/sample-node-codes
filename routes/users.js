@@ -15,7 +15,7 @@ router.get('/me', auth, async (req, res, next) => {
     );
     res.send(user);
   } catch (ex) {
-    next();
+    next(ex);
   }
 });
 

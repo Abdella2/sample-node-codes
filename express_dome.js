@@ -1,9 +1,5 @@
-const winston = require('winston');
 const express = require('express');
-const morgan = require('morgan');
-const appInfo = require('debug')('app:info');
 const appServer = require('debug')('app:server');
-const config = require('config');
 
 require('./startup/logging')();
 
@@ -12,20 +8,12 @@ connect();
 
 const app = express();
 require('./startup/routes')(app);
+require('./startup/config')();
+const { connect } = require('./startup/db');
 
 console.log(process.env);
 console.log(`Environment Variable: ${process.env.NODE_ENV}`);
 console.log(`Environment Variable: ${app.get('env')}`);
-
-if (app.get('env')) {
-  app.use(morgan('tiny'));
-  morgan('combined', {
-    skip: function (req, res) {
-      return res.statusCode < 400;
-    }
-  });
-  appInfo('morgan enabled');
-}
 
 console.log(config.get('app_name'));
 console.log(`Host: ${config.get('employee.dbConfig.host')}`);

@@ -29,9 +29,19 @@ winston.add(
 process.on('uncaughtException', (ex) => {
   console.log('An UNCAUGHT EXCEPTION OCCURRED');
   winston.error(ex.message, ex);
+  process.exit(1);
 });
 
-throw new Error('Something failed during startup.');
+process.on('unhandledRejection', (ex) => {
+  console.log('UNHANDLED PROMISE REJECTION.');
+  winston.error(ex.message, ex);
+  process.exit(1);
+});
+
+const p = Promise.reject(new Error('Something failed unexpected.'));
+p.then(() => console.log('Request completed'));
+
+// throw new Error('Something failed during startup.');
 
 app.use(express.json());
 app.use(cors());

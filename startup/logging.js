@@ -24,6 +24,7 @@ module.exports = function () {
   // process.exit(1);
   // });
   winston.exceptions.handle(
+    new winston.transports.Console({ colorize: true, prettyPrint: true }),
     new winston.transports.File({ filename: 'uncaughtException.log' })
   );
 

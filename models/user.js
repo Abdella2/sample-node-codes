@@ -12,10 +12,14 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
-  password: { type: String, required: true, minlength: 5, maxlength: 1024 }
+  password: { type: String, required: true, minlength: 5, maxlength: 1024 },
+  isAdmin: { type: Boolean, required: true }
 });
 userSchema.methods.generateAuthToken = function () {
-  return jwt.sign({ _id: this.id }, config.get('jwtPrivateKey'));
+  return jwt.sign(
+    { _id: this.id, name: this.name, email: this.email, isAdmin: this.isAdmin },
+    config.get('jwtPrivateKey')
+  );
 };
 
 const User = mongoose.model('User', userSchema);

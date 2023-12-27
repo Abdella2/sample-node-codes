@@ -1,26 +1,50 @@
+const auth = require('../middlewares/auth');
+const admin = require('../middlewares/admin');
 const express = require('express');
+const { Employee, validate } = require('../models/employee');
+const { Address } = require('../models/address');
+const { Car } = require('../models/cars');
+const { Gender } = require('../models/gender');
+const appInfo = require('debug')('app:info');
 
 const router = express.Router();
 
-let employees = [];
+// let employees = [];
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
+  // throw new Error("Couldn't get the employees");
+  const employees = await Employee.find()
+    .populate('company', 'name -_id')
+    .sort({ name: 1 });
   res.send(employees);
 });
 
-router.get('/:id', (req, res) => {
-  if (+req.params.id !== 1) {
+router.get('/:id', async (req, res) => {
+  const employee = await Employee.findById(req.params.id);
+  if (!employee) {
     res.status(404).send(`Employee with ${req.params.id} not found`);
     return;
   }
 
-  res.send({ id: '1' });
+  res.send(employee);
 });
 
-router.post('/', (req, res) => {
-  console.log(req.body);
+router.post('/', auth, async (req, res) => {
+  // console.log(req.body);
 
-  const { name, mobile } = req.body;
+  const {
+    employeeNo,
+    name,
+    email,
+    salary,
+    paymentMethod,
+    phone,
+    departments,
+    company,
+    address,
+    cars,
+    genderId
+  } = req.body;
 
   // if (!name || name.length < 5) {
   //   res.status(400).send('Name should be at least 5 character.');
@@ -34,64 +58,161 @@ router.post('/', (req, res) => {
   //   return;
   // }
 
-  const valResult = validateEmployee(req.body);
+  // console.log(valResult);
+  const { error } = validate(req.body);
 
-  console.log(valResult);
+  if (error) return res.status(400).send(error.details[0].message);
 
-  if (valResult.error) {
-    return res.status(400).send(valResult.error.details[0].message);
-  }
+  const gender = await Gender.findById(genderId);
+  if (!gender)
+    return res.status(400).send(`Gender with id ${genderId} doesn't exist`);
 
-  const employee = {
-    id: employees.length,
+  let employee = new Employee({
+    employeeNo,
     name,
-    mobile
-  };
+    email,
+    salary,
+    paymentMethod,
+    phone,
+    departments,
+    company,
+    address,
+    cars,
+    gender: {
+      _id: gender._id,
+      name: gender.name
+    }
+  });
 
-  employees.push(employee);
+  try {
+    employee = await employee.save();
+  } catch (ex) {
+    return res.status(400).send(ex.message);
+  }
 
   res.send(employee);
 });
 
-router.put('/:id', (req, res) => {
-  const employee = employees.find((emp) => emp.id === +req.params.id);
-
-  if (!employee)
-    return res
-      .status(404)
-      .send(`Employee with id ${requ.params.id} NOT found!`);
-
-  const { error } = validateEmployee(req.body);
+router.put('/:id', auth, async (req, res) => {
+  const { error } = validate(req.body);
 
   if (error) return res.status(400).send(error.details[0].message);
+
+  const { employeeNo, name, email, salary, paymentMethod, phone, departments } =
+    req.body;
+
+  let employee = new Employee({
+    employeeNo,
+    name,
+    email,
+    salary,
+    paymentMethod,
+    phone,
+    departments
+  });
+
+  employee = await Employee.findByIdAndUpdate(req.params.id, employee, {
+    new: true
+  });
+
+  if (!employee)
+    return res.status(404).send(`Employee with id ${req.params.id} NOT found!`);
 
   // employee.name = req.body.name;
   // employee.mobile = req.body.mobile;
 
-  employee = { ...employee, ...req.body };
+  // employee = { ...employee, ...req.body };
+
+  res.send(employee);
+});
+router.put('/:id/address', auth, async (req, res) => {
+  // const { error } = validate(req.body);
+
+  // if (error) return res.status(400).send(error.details[0].message);
+
+  const { houseNo, street } = req.body;
+
+  let address = new Address({
+    houseNo,
+    street
+  });
+  appInfo('Address: ', address);
+  let employee = await Employee.findByIdAndUpdate(
+    req.params.id,
+    {
+      $set: {
+        address: address
+      }
+    },
+    {
+      new: true
+    }
+  );
+
+  if (!employee)
+    return res.status(404).send(`Employee with id ${req.params.id} NOT found!`);
 
   res.send(employee);
 });
 
-router.delete('/:id', (req, res) => {
-  const employee = employees.find((emp) => emp.id === +req.params.id);
+router.delete('/:id/address', async (req, res) => {
+  let employee = await Employee.findByIdAndUpdate(
+    req.params.id,
+    {
+      $unset: {
+        address: ''
+      }
+    },
+    {
+      new: true
+    }
+  );
+
+  if (!employee)
+    return res.status(404).send(`Employee with id ${req.params.id} NOT found!`);
+
+  res.send(employee);
+});
+
+router.delete('/:id', [auth, admin], async (req, res) => {
+  const employee = await Employee.findByIdAndRemove(req.params.id);
 
   if (!employee)
     return res.status(404).send(`Employee with id ${req.params.id} NOT found`);
 
-  const index = employees.findIndex((emp) => emp.id === +req.params.id);
-  employees.splice(index, 1);
+  res.send(employee);
+});
+
+router.post('/:id/cars', async (req, res) => {
+  const { name, model } = req.body;
+
+  let car = new Car({
+    name,
+    model
+  });
+
+  let employee = await Employee.findById(req.params.id);
+
+  if (!employee)
+    return res.status(404).send(`Employee with id ${req.params.id} NOT found!`);
+
+  employee.cars.push(car);
+  employee.save();
 
   res.send(employee);
 });
 
-function validateEmployee(employee) {
-  const schema = Joi.object({
-    name: Joi.string().required().min(5),
-    mobile: Joi.string().required().pattern(new RegExp('^[0-9]{6}$'))
-  });
+router.delete('/:employeeId/cars/:carId', async (req, res) => {
+  let employee = await Employee.findById(req.params.employeeId);
 
-  return schema.validate(employee);
-}
+  if (!employee)
+    return res.status(404).send(`Employee with id ${req.params.id} NOT found!`);
+
+  const car = employee.cars.id(req.params.carId);
+  employee.cars.pull(car);
+  employee.save();
+
+  res.send(employee);
+});
 
 module.exports = router;

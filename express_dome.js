@@ -1,40 +1,13 @@
-const express = require('express');
-const morgan = require('morgan');
-const appInfo = require('debug')('app:info');
 const appServer = require('debug')('app:server');
-const Joi = require('joi');
-const logger = require('./middlewares/custom_middleware');
-const config = require('config');
-const employees = require('./routes/employees');
-const customers = require('./routes/customers');
-
+const winston = require('winston');
+const express = require('express');
 const app = express();
+const { connect, getConnectionString } = require('./startup/db');
+connect();
 
-app.use(express.json());
-app.use(logger.log);
-app.use('/api/employees', employees);
-app.use('/api/customers', customers);
-app.use(express.static('public'));
-
-console.log(process.env);
-console.log(`Environment Variable: ${process.env.NODE_ENV}`);
-console.log(`Environment Variable: ${app.get('env')}`);
-
-if (app.get('env')) {
-  app.use(morgan('tiny'));
-  morgan('combined', {
-    skip: function (req, res) {
-      return res.statusCode < 400;
-    }
-  });
-  appInfo('morgan enabled');
-}
-
-console.log(config.get('app_name'));
-console.log(`Host: ${config.get('employee.dbConfig.host')}`);
-console.log(`Password: ${config.get('employee.dbConfig.dbPassword')}`);
-
-app.get('/', (req, res) => res.send('hello world'));
+require('./startup/logging')();
+require('./startup/routes')(app);
+require('./startup/config')(app);
 
 const port = process.env.NODE_PORT || 3000;
 

@@ -10,5 +10,10 @@
       "initialLimit": 100,
       "initialDays": 1
     }
+  },
+  "db": {
+    "host": "mongodb://127.0.0.1",
+    "port": "27017",
+    "dbName": "mongo_practice"
   }
 }
